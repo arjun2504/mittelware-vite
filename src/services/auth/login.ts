@@ -23,7 +23,7 @@ export const sendEmailOtp = async (email: string) => {
   return { email };
 }
 
-export const loginWithEmailOtp = async (email: string, token: string) => {
+export const loginWithEmailOtp = async ({ email, token }: { email: string, token: string }) => {
   const { data, error } = await supabase.auth.verifyOtp({
     email,
     token,

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import supabase from "@/services/supabase/client";
 import { useMutation } from "@tanstack/react-query";
 import { Center, Loader } from "@mantine/core";
 import { logout } from "@/services/auth/login";

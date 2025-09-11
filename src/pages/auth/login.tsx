@@ -5,7 +5,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import { Form, useNavigate } from "react-router";
 import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { signInSso } from "@/services/auth/login";
+import { loginWithEmailOtp, sendEmailOtp, signInSso } from "@/services/auth/login";
 
 const Login = () => {
   const [hasCodeSent, setHasCodeSent] = useState(false);
@@ -18,6 +18,15 @@ const Login = () => {
     onSuccess: (data) => {
       navigate('/callback');
     }
+  });
+
+  const sendOtp = useMutation({
+    mutationFn: sendEmailOtp,
+  });
+
+  const login = useMutation({
+    mutationFn: loginWithEmailOtp,
+    onSuccess: () => navigate('/rules')
   })
 
   const canAskCode = useMemo(() => {
@@ -44,12 +53,9 @@ const Login = () => {
   const onSubmit = async (values: { email: string; code: string }) => {
     setIsLoading(true);
     if (values.email && !values.code) {
-      await sendEmailOtp(values.email);
+      await sendOtp.mutate(values.email);
     } else {
-      const { error } = await loginWithEmailOtp(values.email, values.code);
-      if (!error) {
-        navigate('/rules');
-     }
+      await login.mutate({ email: values.email, token: values.code});
     }
     if (!hasCodeSent) {
       setHasCodeSent(true);
