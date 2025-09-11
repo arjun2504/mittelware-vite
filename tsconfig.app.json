@@ -31,7 +31,8 @@
       "@/components/*": ["./src/components/*"],
       "@/assets/*": ["./src/assets/*"],
       "@/services/*": ["./src/services/*"],
-      "@/utils/*": ["./src/utils/*"]
+      "@/utils/*": ["./src/utils/*"],
+      "@/hooks/*": ["./src/hooks/*"],
     }
   },
   "include": ["src"]

@@ -4,12 +4,21 @@ import GoogleIcon from '@/assets/google.svg?react';
 import { FaXTwitter } from "react-icons/fa6";
 import { Form, useNavigate } from "react-router";
 import { useMemo, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { signInSso } from "@/services/auth/login";
 
 const Login = () => {
   const [hasCodeSent, setHasCodeSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({ email: null, code: null });
   const navigate = useNavigate();
+
+  const socialSignIn = useMutation({
+    mutationFn: signInSso,
+    onSuccess: (data) => {
+      navigate('/callback');
+    }
+  })
 
   const canAskCode = useMemo(() => {
     return hasCodeSent && !errors?.email;
@@ -31,8 +40,6 @@ const Login = () => {
       },
     }
   });
-
-  const signInSso = () => null;
 
   const onSubmit = async (values: { email: string; code: string }) => {
     setIsLoading(true);
@@ -82,8 +89,8 @@ const Login = () => {
       </Text>
 
       <Group grow mb="md" mt="md">
-        <Button leftSection={<GoogleIcon width={14} height={14} />} variant="default" radius="xl" onClick={() => signInSso('google')} />
-        <Button leftSection={<FaXTwitter />} variant="default" radius="xl" onClick={() => signInSso('twitter')} />
+        <Button leftSection={<GoogleIcon width={14} height={14} />} variant="default" radius="xl" onClick={() => socialSignIn.mutate('google')} />
+        <Button leftSection={<FaXTwitter />} variant="default" radius="xl" onClick={() => socialSignIn.mutate('twitter')} />
       </Group>
 
       <Divider label="Or continue with email" labelPosition="center" my="lg" />

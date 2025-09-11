@@ -1,5 +1,30 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import supabase from "@/services/supabase/client";
+import { useMutation } from "@tanstack/react-query";
+import { Center, Loader } from "@mantine/core";
+import { logout } from "@/services/auth/login";
+
 const Logout = () => {
-  return (<h1>Logout</h1>);
+  const navigate = useNavigate();
+
+  const signOut = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      navigate('/login');
+    },
+    onError: (error) => console.log(error)
+  })
+
+  useEffect(() => {
+    signOut.mutate();
+  }, []);
+
+  return (
+    <Center>
+      <Loader type='oval' />
+    </Center>
+  );
 }
 
 export default Logout;

@@ -1,33 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { MantineProvider } from '@mantine/core'
+import Notification from '@/components/notification/notification'
+import { BrowserRouter, Route, Routes } from 'react-router'
+import AuthLayout from '@/layouts/auth'
+import Login from '@/pages/auth/login'
+import Logout from '@/pages/auth/logout'
+import { QueryClientProvider } from '@tanstack/react-query'
+import Callback from '@/pages/auth/callback'
+import queryClient from '@/services/tanstack/client'
+import RulesList from './pages/rules/list'
+import { ProtectedLayout } from './layouts/protected'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider>
+        <Notification />
+        <BrowserRouter>
+          <Routes>
+            <Route index element={<App />} />
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/logout" element={<Logout />} />
+              <Route path="/callback" element={<Callback />} />
+            </Route>
+            <Route path="/rules" element={<ProtectedLayout />}>
+              <Route index element={<RulesList />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </MantineProvider>
+    </QueryClientProvider>
   )
 }
 

@@ -14,6 +14,7 @@ export default defineConfig({
       "@/assets": "/src/assets",
       "@/services": "/src/services",
       "@/utils": "/src/utils",
+      "@/hooks": "/src/hooks",
     }
   },
   plugins: [
