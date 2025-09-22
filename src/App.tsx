@@ -1,6 +1,6 @@
 import { MantineProvider } from '@mantine/core'
 import Notification from '@/components/notification/notification'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router'
 import AuthLayout from '@/layouts/auth'
 import Login from '@/pages/auth/login'
 import Logout from '@/pages/auth/logout'
@@ -10,7 +10,6 @@ import queryClient from '@/services/tanstack/client'
 import RulesList from '@/pages/rules/list'
 import { ProtectedLayout } from './layouts/protected'
 import RuleForm from './pages/rules/form'
-import Home from './pages/home/home'
 
 function App() {
 
@@ -22,7 +21,7 @@ function App() {
         <Notification />
         <BrowserRouter>
           <Routes>
-            <Route index element={<Home />} />
+            <Route index element={<Navigate to="/rules" replace />} />
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
