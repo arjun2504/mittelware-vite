@@ -1,7 +1,7 @@
 import { AppShell, Image, Group, Text, Container, Stack, NavLink as MantineNavLink, Tooltip, Avatar, Menu } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
-import { useSession } from "@/hooks/use-session";
+import { useUser } from "@/hooks/use-user";
 import { ConfirmDialog } from "@/components/confirm-dialog/confirm-dialog";
 import { logout } from "@/services/auth/login";
 import Logo from '@/assets/mittelware-logo.png';
@@ -13,10 +13,9 @@ export const ProtectedLayout = () => {
   const [opened] = useDisclosure();
   const [logoutDialogOpen, { open: openLogoutDialog, close: closeLogoutDialog }] = useDisclosure();
   const navigate = useNavigate();
-  const session = useSession();
-  console.log(session?.user?.user_metadata?.avatar_url)
+  const session = useUser();
 
-  return session?.user && (
+  return session && (
     <AppShell
       header={{ height: 60 }}
       navbar={{
@@ -66,12 +65,12 @@ export const ProtectedLayout = () => {
           <Stack gap={0} justify="flex-end">
             <Menu withArrow shadow="md">
               <Menu.Target>
-                <Avatar className="cursor-pointer" src={session.user.user_metadata.avatar_url} m={6} alt={session.user.user_metadata.full_name} />
+                <Avatar className="cursor-pointer" src={session.user_metadata.avatar_url} m={6} alt={session.user_metadata.full_name} />
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item className="!bg-transparent !hover:bg-transparent">
-                  <Text>{session.user.user_metadata.full_name}</Text>
-                  <Text size="xs" c="dimmed">{session.user.email}</Text>
+                  <Text>{session.user_metadata.full_name}</Text>
+                  <Text size="xs" c="dimmed">{session.email}</Text>
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item onClick={openLogoutDialog} leftSection={<FaSignOutAlt />}>

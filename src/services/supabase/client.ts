@@ -9,7 +9,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: isLocalhost,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
   }
 });
 
