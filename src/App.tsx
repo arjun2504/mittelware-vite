@@ -7,18 +7,22 @@ import Logout from '@/pages/auth/logout'
 import { QueryClientProvider } from '@tanstack/react-query'
 import Callback from '@/pages/auth/callback'
 import queryClient from '@/services/tanstack/client'
-import RulesList from './pages/rules/list'
+import RulesList from '@/pages/rules/list'
 import { ProtectedLayout } from './layouts/protected'
+import RuleForm from './pages/rules/form'
+import Home from './pages/home/home'
 
 function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider>
+      <MantineProvider theme={{
+        fontFamily: 'Inter, sans-serif',
+      }}>
         <Notification />
         <BrowserRouter>
           <Routes>
-            <Route index element={<App />} />
+            <Route index element={<Home />} />
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
@@ -26,6 +30,7 @@ function App() {
             </Route>
             <Route path="/rules" element={<ProtectedLayout />}>
               <Route index element={<RulesList />} />
+              <Route path=":ruleType/:id" element={<RuleForm />} />
             </Route>
           </Routes>
         </BrowserRouter>

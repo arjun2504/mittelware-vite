@@ -2,36 +2,48 @@ import { Alert, Anchor, Button, Divider, Group, isNumberLike, Stack, Text, TextI
 import { useForm } from "@mantine/form";
 import GoogleIcon from '@/assets/google.svg?react';
 import { FaXTwitter } from "react-icons/fa6";
-import { Form, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { loginWithEmailOtp, sendEmailOtp, signInSso } from "@/services/auth/login";
 
 const Login = () => {
   const [hasCodeSent, setHasCodeSent] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState({ email: null, code: null });
   const navigate = useNavigate();
 
   const socialSignIn = useMutation({
     mutationFn: signInSso,
-    onSuccess: (data) => {
+    onSuccess: () => {
       navigate('/callback');
+    },
+    onError: (error) => {
+      console.error('Social sign-in failed:', error);
     }
   });
 
   const sendOtp = useMutation({
     mutationFn: sendEmailOtp,
+    onSuccess: () => {
+      setHasCodeSent(true);
+    },
+    onError: (error) => {
+      console.error('Failed to send OTP:', error);
+    }
   });
 
   const login = useMutation({
     mutationFn: loginWithEmailOtp,
-    onSuccess: () => navigate('/rules')
-  })
+    onSuccess: () => {
+      navigate('/rules');
+    },
+    onError: (error) => {
+      console.error('Login failed:', error);
+    }
+  });
 
   const canAskCode = useMemo(() => {
-    return hasCodeSent && !errors?.email;
-  }, [errors, hasCodeSent]);
+    return hasCodeSent && !sendOtp.error;
+  }, [hasCodeSent, sendOtp.error]);
 
   const form = useForm({
     initialValues: {
@@ -50,23 +62,19 @@ const Login = () => {
     }
   });
 
-  const onSubmit = async (values: { email: string; code: string }) => {
-    setIsLoading(true);
+  const onSubmit = (values: { email: string; code: string }) => {
     if (values.email && !values.code) {
-      await sendOtp.mutate(values.email);
+      sendOtp.mutate(values.email);
     } else {
-      await login.mutate({ email: values.email, token: values.code});
+      login.mutate({ email: values.email, token: values.code});
     }
-    if (!hasCodeSent) {
-      setHasCodeSent(true);
-    }
-    setIsLoading(false);
   };
 
-  const onFailure = (err) => { console.log(err); };
+  const onFailure = (err: any) => { 
+    console.log('Form validation failed:', err); 
+  };
 
-  const onChangeEmail = (event) => {
-    setErrors({ ...errors, email: null });
+  const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     form.clearFieldError('email');
     form.setFieldValue('email', event.currentTarget.value);
     form.setFieldValue('code', '');
@@ -75,16 +83,15 @@ const Login = () => {
     }
   }
 
-  const onChangeCode = (event) => {
-    setErrors({ ...errors, code: null });
+  const onChangeCode = (event: React.ChangeEvent<HTMLInputElement>) => {
     form.setFieldValue('code', event.currentTarget.value || '');
   };
 
   const isButtonDisabled = () => {
     if (hasCodeSent) {
-      return isLoading || !form.values.code.trim(); 
+      return login.isPending || !form.values.code.trim(); 
     } else {
-      return isLoading || !form.values.email.trim();
+      return sendOtp.isPending || !form.values.email.trim();
     }
   };
 
@@ -95,8 +102,20 @@ const Login = () => {
       </Text>
 
       <Group grow mb="md" mt="md">
-        <Button leftSection={<GoogleIcon width={14} height={14} />} variant="default" radius="xl" onClick={() => socialSignIn.mutate('google')} />
-        <Button leftSection={<FaXTwitter />} variant="default" radius="xl" onClick={() => socialSignIn.mutate('twitter')} />
+        <Button 
+          leftSection={<GoogleIcon width={14} height={14} />} 
+          variant="default" 
+          radius="xl" 
+          loading={socialSignIn.isPending}
+          onClick={() => socialSignIn.mutate('google')} 
+        />
+        <Button 
+          leftSection={<FaXTwitter />} 
+          variant="default" 
+          radius="xl" 
+          loading={socialSignIn.isPending}
+          onClick={() => socialSignIn.mutate('twitter')} 
+        />
       </Group>
 
       <Divider label="Or continue with email" labelPosition="center" my="lg" />
@@ -109,9 +128,9 @@ const Login = () => {
             placeholder="hello@example.com"
             value={form.values.email}
             onChange={onChangeEmail}
-            error={errors.email}
+            error={sendOtp.error?.message || form.errors.email}
             radius="md"
-            disabled={isLoading}
+            disabled={sendOtp.isPending || login.isPending}
           />
           {canAskCode ? (
             <>
@@ -122,9 +141,9 @@ const Login = () => {
                 placeholder="XXXXXX"
                 radius="md"
                 value={form.values.code}
-                error={errors.code}
+                error={login.error?.message || form.errors.code}
                 onChange={onChangeCode}
-                disabled={isLoading}
+                disabled={login.isPending}
               />
             </>
           ) : null}
@@ -133,7 +152,12 @@ const Login = () => {
           {canAskCode ? (<Anchor component="button" type="button" c="dimmed" size="xs">
             Did not receive? Click to resend
           </Anchor>) : null}
-          <Button loading={isLoading} type="submit" radius="xl" disabled={isButtonDisabled()}>
+          <Button 
+            loading={sendOtp.isPending || login.isPending} 
+            type="submit" 
+            radius="xl" 
+            disabled={isButtonDisabled()}
+          >
             {canAskCode ? 'Verify & Sign In' : 'Continue'}
           </Button>
         </Group>

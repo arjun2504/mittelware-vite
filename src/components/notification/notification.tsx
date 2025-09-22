@@ -9,7 +9,12 @@ const Notification = () => {
   }, []);
 
   if (!mounted) return null;
-  return <Notifications />;
+  return (
+    <Notifications
+      position="bottom-right"
+      zIndex={1000}
+    />
+  );
 }
 
 export default Notification;
