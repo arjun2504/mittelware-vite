@@ -1,5 +1,5 @@
 import { ActionIcon, Group, Switch, TextInput, Menu } from "@mantine/core";
-import { FaRegCopy, FaRegTrashCan } from "react-icons/fa6";
+import { FaPencil, FaRegCopy, FaRegTrashCan } from "react-icons/fa6";
 import { FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import type { Rule } from "@/types/rules";
@@ -68,6 +68,9 @@ export function TableActions(props: TableActionsProps) {
           </ActionIcon>
         </Menu.Target>
         <Menu.Dropdown>
+          <Menu.Item leftSection={<FaPencil />} onClick={() => navigate(`/rules/${record.type}/${record.id}`)}>
+            Edit
+          </Menu.Item>
           <Menu.Item leftSection={<FaRegCopy />} onClick={e => { e.stopPropagation(); onOpenMakeCopy(); }}>
             Make a copy
           </Menu.Item>

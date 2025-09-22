@@ -19,7 +19,7 @@ const SkeletonList = (props: SkeletonListProps) => {
         <span style={{ minWidth: 120, flex: '2 1 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Name</span>
         <span style={{ minWidth: 70, flex: '1 1 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Type</span>
         <span style={{ minWidth: 110, flex: '1 1 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Last Modified</span>
-        <span style={{ minWidth: 110, flex: '1 1 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Created At</span>
+        {/* <span style={{ minWidth: 110, flex: '1 1 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Created At</span> */}
         <span style={{ minWidth: 120, flex: '1.5 1 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Actions</span>
       </div>
       {/* Table rows skeleton */}
@@ -38,7 +38,7 @@ const SkeletonList = (props: SkeletonListProps) => {
           {/* LastModified */}
           <Skeleton height={20} style={{ minWidth: 110, flex: '1 1 0' }} radius="sm" />
           {/* Created At */}
-          <Skeleton height={20} style={{ minWidth: 110, flex: '1 1 0' }} radius="sm" />
+          {/* <Skeleton height={20} style={{ minWidth: 110, flex: '1 1 0' }} radius="sm" /> */}
           {/* Actions */}
           <div style={{ display: 'flex', gap: '1rem', minWidth: 120, flex: '1.5 1 0' }}>
             {Array.from({ length: 2 }).map((_, btnIndex) => (

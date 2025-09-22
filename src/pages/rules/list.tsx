@@ -29,7 +29,10 @@ const RulesList = () => {
   const PAGE_SIZE = 10;
 
   const rulesList = useQuery({
-    queryFn: () => getRules(page, PAGE_SIZE),
+    queryFn: () => {
+      syncRulesWithExtension();
+      return getRules(page, PAGE_SIZE)
+    },
     queryKey: ['rules', page],
     placeholderData: (previousData) => previousData
   });
@@ -229,11 +232,11 @@ const RulesList = () => {
               title: 'Last Modified',
               render: (record: Rule) => <MomentAgo datetime={record.updated_at} />
             },
-            {
-              accessor: 'created_at',
-              title: 'Created At',
-              render: (record: Rule) => <MomentAgo datetime={record.updated_at} />
-            },
+            // {
+            //   accessor: 'created_at',
+            //   title: 'Created At',
+            //   render: (record: Rule) => <MomentAgo datetime={record.updated_at} />
+            // },
             { 
               accessor: 'actions', 
               title: 'Actions',

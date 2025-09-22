@@ -27,7 +27,7 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
         blur: 3,
       }}
       onClick={(e) => e.stopPropagation()}
-      transitionProps={{ transition: 'rotate-left' }}
+      transitionProps={{ transition: 'slide-down' }}
     >
       {children ? children : <Text>{message}</Text>}
       <Group justify="flex-end" align="center" mt="md">

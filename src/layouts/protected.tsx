@@ -1,18 +1,20 @@
 import { AppShell, Image, Group, Text, Container, Stack, NavLink as MantineNavLink, Tooltip, Avatar, Menu } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Link, NavLink, Outlet, useNavigate } from "react-router";
+import { Link, NavLink, Outlet, useNavigate, useLocation } from "react-router";
 import { useUser } from "@/hooks/use-user";
 import { ConfirmDialog } from "@/components/confirm-dialog/confirm-dialog";
 import { logout } from "@/services/auth/login";
 import Logo from '@/assets/mittelware-logo.png';
 import { FaSignOutAlt } from "react-icons/fa";
 import { FaFilter, FaCaretRight } from "react-icons/fa6";
+import { IoExtensionPuzzle } from "react-icons/io5";
+
 
 export const ProtectedLayout = () => {
-  const ruleType = '';
   const [opened] = useDisclosure();
   const [logoutDialogOpen, { open: openLogoutDialog, close: closeLogoutDialog }] = useDisclosure();
   const navigate = useNavigate();
+  const location = useLocation();
   const session = useUser();
 
   return session && (
@@ -51,6 +53,16 @@ export const ProtectedLayout = () => {
       <AppShell.Navbar className="bg-white">
         <Stack justify="space-between" style={{ height: '100%' }}>
           <Stack gap={0}>
+            <Tooltip label="Extension" position="right" withArrow>
+              <MantineNavLink
+                component={NavLink}
+                to="/extension"
+                label="Extension"
+                leftSection={<IoExtensionPuzzle />}
+                variant="filled"
+                active={location.pathname.startsWith('/extension')}
+              />
+            </Tooltip>
             <Tooltip label="Rules" position="right" withArrow>
               <MantineNavLink
                 component={NavLink}
@@ -58,7 +70,7 @@ export const ProtectedLayout = () => {
                 label="Rules"
                 leftSection={<FaFilter />}
                 variant="filled"
-                active={!ruleType}
+                active={location.pathname.startsWith('/rules')}
               />
             </Tooltip>
           </Stack>

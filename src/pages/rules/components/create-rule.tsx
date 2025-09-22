@@ -21,7 +21,7 @@ export function CreateRule() {
           backgroundOpacity: 0.55,
           blur: 3,
         }}
-        transitionProps={{ transition: 'rotate-left' }}
+        transitionProps={{ transition: 'slide-down' }}
       >
         <MantineNavLink
           component={NavLink}

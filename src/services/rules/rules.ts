@@ -185,3 +185,9 @@ export const syncRulesWithExtension = async () => {
   return rules;
 };
 
+export const pingExtension = () => {
+  window.postMessage({
+    source: 'mittelware-interceptor-rules',
+    type: 'mittelware:intercept:ping',
+  }, '*');
+};
