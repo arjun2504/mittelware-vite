@@ -3,12 +3,13 @@ import { useForm } from "@mantine/form";
 import GoogleIcon from '@/assets/google.svg?react';
 import { FaXTwitter } from "react-icons/fa6";
 import { useNavigate } from "react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { loginWithEmailOtp, sendEmailOtp, signInSso } from "@/services/auth/login";
 
 const Login = () => {
   const [hasCodeSent, setHasCodeSent] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const navigate = useNavigate();
 
   const socialSignIn = useMutation({
@@ -25,11 +26,20 @@ const Login = () => {
     mutationFn: sendEmailOtp,
     onSuccess: () => {
       setHasCodeSent(true);
+      setResendCooldown(60);
     },
     onError: (error) => {
       console.error('Failed to send OTP:', error);
     }
   });
+
+  // Cooldown timer effect
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendCooldown]);
 
   const login = useMutation({
     mutationFn: loginWithEmailOtp,
@@ -149,9 +159,24 @@ const Login = () => {
           ) : null}
         </Stack>
         <Group justify={canAskCode ? 'space-between' : 'flex-end'} mt="xl">
-          {canAskCode ? (<Anchor component="button" type="button" c="dimmed" size="xs">
-            Did not receive? Click to resend
-          </Anchor>) : null}
+          {canAskCode ? (
+            <Anchor
+              component="button"
+              type="button"
+              c="dimmed"
+              size="xs"
+              onClick={() => {
+                if (form.values.email && resendCooldown === 0) {
+                  sendOtp.mutate(form.values.email);
+                }
+              }}
+              disabled={sendOtp.isPending || resendCooldown > 0}
+            >
+              {resendCooldown > 0
+                ? `Resend available in ${resendCooldown}s`
+                : 'Did not receive? Click to resend'}
+            </Anchor>
+          ) : null}
           <Button 
             loading={sendOtp.isPending || login.isPending} 
             type="submit" 
