@@ -1,5 +1,5 @@
-import { NavLink, useNavigate, useSearchParams } from "react-router";
-import { Group, Stack, Text, Breadcrumbs, Button, Title, Loader, Center } from "@mantine/core";
+import { useNavigate, useSearchParams } from "react-router";
+import { Group, Stack, Text, Breadcrumbs, Button, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { FaExchangeAlt } from "react-icons/fa";
 import { MdBlock } from "react-icons/md";
@@ -22,7 +22,7 @@ const RulesList = () => {
   const [selectedRules, setSelectedRules] = useState<Rule[]>([]);
   const [isBulkDeleteOpen, bulkDeleteModalActions] = useDisclosure();
   const [params] = useSearchParams();
-  const [page, setPage] = useState(params.get('page') || 1);
+  const [page, setPage] = useState(Number(params.get('page')) || 1);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -177,6 +177,7 @@ const RulesList = () => {
         <SkeletonList rows={PAGE_SIZE} />
       ) : (
         <DataTable
+          withTableBorder={false}
           className="border border-gray-200 [&_th]:bg-gray-100"
           records={(rulesList.data as any)?.data || []}
           highlightOnHover={true}

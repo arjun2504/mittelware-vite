@@ -1,4 +1,4 @@
-import { AppShell, Image, Group, Text, Container, Center, Stack, NavLink as MantineNavLink, Tooltip, Avatar, Popover, Divider, Menu } from "@mantine/core";
+import { AppShell, Image, Group, Text, Container, Stack, NavLink as MantineNavLink, Tooltip, Avatar, Menu } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import { useSession } from "@/hooks/use-session";

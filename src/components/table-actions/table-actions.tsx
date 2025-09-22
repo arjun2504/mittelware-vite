@@ -1,8 +1,8 @@
-import { ActionIcon, Group, Switch, TextInput, Tooltip, Menu } from "@mantine/core";
+import { ActionIcon, Group, Switch, TextInput, Menu } from "@mantine/core";
 import { FaRegCopy, FaRegTrashCan } from "react-icons/fa6";
 import { FaEllipsisV } from "react-icons/fa";
-import { NavLink, useNavigate } from "react-router";
-import type { Rule } from "~/modules/rules/types/rule";
+import { useNavigate } from "react-router";
+import type { Rule } from "@/types/rules";
 import { ConfirmDialog } from "../confirm-dialog/confirm-dialog";
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
@@ -43,7 +43,7 @@ export function TableActions(props: TableActionsProps) {
 
   const onDeleteRecord = () => {
     isDeleteConfirmAction.close();
-    onDelete(record.id);
+    onDelete(record.id as number);
   }
 
   return (
@@ -57,7 +57,7 @@ export function TableActions(props: TableActionsProps) {
           defaultChecked={record.is_enabled}
           size='xs'
           className='!cursor-pointer'
-          onChange={() => onToggle(record.id, record.is_enabled)}
+          onChange={() => onToggle(record.id as number, record.is_enabled)}
           withThumbIndicator={false}
         />
       </div>

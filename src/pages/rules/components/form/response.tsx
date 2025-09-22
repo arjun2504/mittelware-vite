@@ -1,4 +1,4 @@
-import { Alert, Code, InputDescription, InputLabel, Paper, Select, Stack } from "@mantine/core";
+import { Alert, Code, InputDescription, InputLabel, Select, Stack } from "@mantine/core";
 import { AdvancedFilters } from "./common/advanced-filters";
 import { URLInput } from "./common/url";
 import { FormHeader } from "./common/header";

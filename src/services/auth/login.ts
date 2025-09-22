@@ -1,5 +1,4 @@
 import supabase from "@/services/supabase/client";
-import { notify } from "@/utils/notification";
 
 export const signInSso = async (provider: 'google' | 'twitter') => {
   const { data, error } = await supabase.auth.signInWithOAuth({

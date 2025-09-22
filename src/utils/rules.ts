@@ -68,7 +68,7 @@ export const transformRulesToExtensionFormat = (rules: Rule[]) => {
     }
 
     const updatedRules = actions.map((action, index) => ({
-      id: rule.id * 10 + index, // Generate DeclarativeNetRequest ID
+      id: rule.id as number * 10 + index, // Generate DeclarativeNetRequest ID
       priority: 1 + index,
       action: {
         type: EXTENSION_RULE_TYPE_MAP[rule.type],
