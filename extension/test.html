@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mittelware API Test App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 2rem;
+      }
+      button {
+        margin: 0.5rem 1rem 0.5rem 0;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+      }
+      pre {
+        background: #f6f8fa;
+        padding: 1rem;
+        border-radius: 5px;
+        max-width: 100%;
+        overflow: auto;
+      }
+    </style>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState } = React;
+
+      function App() {
+        const [response, setResponse] = useState(null);
+
+        const handleRequest = async (method) => {
+          let url = "https://jsonplaceholder.typicode.com/posts";
+          let options = { method };
+
+          if (method === "GET" || method === "DELETE") {
+            url += "/1"; // Use ID 1 for GET and DELETE
+          } else {
+            options.headers = {
+              "Content-Type": "application/json"
+            };
+            options.body = JSON.stringify({
+              title: `Mittelware ${method}`,
+              body: `Test request with method: ${method}`,
+              userId: 1
+            });
+            if (method === "PATCH") url += "/1"; // PATCH also needs an ID
+            if (method === "PUT") url += "/1"; // PUT needs full object with ID
+          }
+
+          try {
+            const res = await fetch(url, options);
+            const data = await res.json();
+            setResponse({ method, data });
+          } catch (err) {
+            setResponse({ method, error: err.message });
+          }
+        };
+
+        return (
+          <div>
+            <h1>Mittelware API Tester</h1>
+            <p>Use these buttons to send all kinds of HTTP requests.</p>
+            <div>
+              <button onClick={() => handleRequest("GET")}>GET</button>
+              <button onClick={() => handleRequest("POST")}>POST</button>
+              <button onClick={() => handleRequest("PUT")}>PUT</button>
+              <button onClick={() => handleRequest("PATCH")}>PATCH</button>
+              <button onClick={() => handleRequest("DELETE")}>DELETE</button>
+            </div>
+            <h2>Response</h2>
+            <pre>{JSON.stringify(response, null, 2)}</pre>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
