@@ -12,7 +12,7 @@ const ExtensionAlert = () => {
     return (
       <Alert title="Install Extension" icon={<IoExtensionPuzzle className="h-10 w-10" />} color="red" variant="light">
         <Stack>
-          <p>To execute the rules you've added, you'll need to install <span className="font-bold">Intercept by Mittelware</span> from the store. This extension enables the rules to actively monitor and intercept your network requests.</p>
+          <p>To execute the rules you've added, you'll need to install <span className="font-bold">Intercept by Mittelware</span> from the store. This extension enables the rules to actively intercept your network requests.</p>
           <Link target="_blank" to="https://chromewebstore.google.com/detail/phflkedcmcidnndahgchpfmbnpjplicf/">
             <Button
               variant="light"

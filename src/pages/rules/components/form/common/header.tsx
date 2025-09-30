@@ -10,7 +10,7 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { FaRegSave } from "react-icons/fa";
 import { notify } from "@/utils/notification";
 import { useMutation } from "@tanstack/react-query";
-import ExtensionPausedAlert from "@/components/extension-status/extension-alert";
+import ExtensionAlert from "@/components/extension-status/extension-alert";
 import { useStore, type Store } from "@/store";
 
 interface FormTitleProps {
@@ -125,7 +125,7 @@ export function FormHeader(props: FormTitleProps) {
           <Button type='submit' disabled={!rule.isDirty()} loading={rule.submitting} leftSection={<FaRegSave />}>Save Rule</Button>
         </Group>
       </Flex>
-      {settings.isPaused && (<ExtensionPausedAlert />)}
+      <ExtensionAlert />
       <Stack gap='md' w='50%'>
         <TextInput
           label='Name'
