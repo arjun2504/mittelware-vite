@@ -48,20 +48,25 @@ export const transformRulesToExtensionFormat = (rules: Rule[]) => {
         }];
         break;
       case 'modify-headers':
-        actions = [{
-          requestHeaders: (rule.config?.request || []).map((item: HeaderType)=>({
-            header: item.key,
-            operation: item.action,
-            value: item.action !== 'remove' ? item.value : undefined 
-          })),
-        },
-        {
-          responseHeaders: (rule.config?.response || []).map((item: HeaderType)=>({
-            header: item.key,
-            operation: item.action,
-            value: item.action !== 'remove' ? item.value : undefined
-          }))
-        }];
+        actions = [];
+        if ((rule.config?.request || []).length) {
+          actions.push({
+              requestHeaders: (rule.config?.request || []).map((item: HeaderType)=>({
+              header: item.key,
+              operation: item.action,
+              value: item.action !== 'remove' ? item.value : undefined 
+            })),
+          });
+        }
+        if ((rule.config?.response || []).length) {
+          actions.push({
+            responseHeaders: (rule.config?.response || []).map((item: HeaderType)=>({
+              header: item.key,
+              operation: item.action,
+              value: item.action !== 'remove' ? item.value : undefined
+            }))
+          })
+        }
         break;
       default:
         return allRules;
