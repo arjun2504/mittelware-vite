@@ -2,6 +2,7 @@ import type { Rule } from '@/types/rules';
 import supabase from '@/services/supabase/client';
 import { DEFAULT_RULES } from "@/constants/rules/form";
 import { transformRulesToExtensionFormat } from '@/utils/rules';
+import { useStore, type Store } from '@/store';
 
 export const getRule = async (id: string | number | undefined, type: string | undefined) => {
   if (!isNaN(id as number) || !type) {
@@ -177,6 +178,9 @@ export const getAllEnabledRules = async () => {
 }
 
 export const syncRulesWithExtension = async () => {
+  const state = useStore.getState() as Store;
+  if (!state.isExtensionConnected) return;
+
   const enabledRules = await getAllEnabledRules();
 
   const formattedRules = transformRulesToExtensionFormat(enabledRules);

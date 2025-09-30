@@ -10,7 +10,7 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { FaRegSave } from "react-icons/fa";
 import { notify } from "@/utils/notification";
 import { useMutation } from "@tanstack/react-query";
-import ExtensionPausedAlert from "@/components/extension-status/extension-paused-alert";
+import ExtensionPausedAlert from "@/components/extension-status/extension-alert";
 import { useStore, type Store } from "@/store";
 
 interface FormTitleProps {

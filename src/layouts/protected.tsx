@@ -57,16 +57,6 @@ export const ProtectedLayout = () => {
       <AppShell.Navbar className="bg-white">
         <Stack justify="space-between" style={{ height: '100%' }}>
           <Stack gap={0}>
-            <Tooltip label="Extension" position="right" withArrow>
-              <MantineNavLink
-                component={NavLink}
-                to="/extension"
-                label="Extension"
-                leftSection={<IoExtensionPuzzle />}
-                variant="filled"
-                active={location.pathname.startsWith('/extension')}
-              />
-            </Tooltip>
             <Tooltip label="Rules" position="right" withArrow>
               <MantineNavLink
                 component={NavLink}

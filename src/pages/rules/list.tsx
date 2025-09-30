@@ -18,7 +18,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import MomentAgo from "@/components/moment-ago/moment-ago";
 import SkeletonList from "./components/skeleton/list";
 import { useStore, type Store } from "@/store";
-import ExtensionPausedAlert from "@/components/extension-status/extension-paused-alert";
+import ExtensionAlert from "@/components/extension-status/extension-alert";
 
 const RulesList = () => {
   const [selectedRules, setSelectedRules] = useState<Rule[]>([]);
@@ -168,7 +168,7 @@ const RulesList = () => {
           <CreateRule />
         </Group>
       </Group>
-      {settings.isPaused && (<ExtensionPausedAlert />)}
+      <ExtensionAlert />
       <ConfirmDialog
         isOpen={isBulkDeleteOpen}
         onClose={bulkDeleteModalActions.close}

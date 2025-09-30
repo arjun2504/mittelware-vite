@@ -47,7 +47,7 @@ export default defineBackground({
         settings: {
           isPaused: false,
         }
-      })
+      });
       // browser.tabs.create({ url: 'https://intercept.mittelware.com' });
     });
   }

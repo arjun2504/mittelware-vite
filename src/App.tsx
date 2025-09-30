@@ -10,7 +10,7 @@ import queryClient from '@/services/tanstack/client'
 import RulesList from '@/pages/rules/list'
 import { ProtectedLayout } from './layouts/protected'
 import RuleForm from './pages/rules/form'
-import Extension from './pages/extension/extension'
+import PrivacyPolicy from './pages/privacy-policy'
 
 function App() {
 
@@ -32,9 +32,7 @@ function App() {
               <Route index element={<RulesList />} />
               <Route path=":ruleType/:id" element={<RuleForm />} />
             </Route>
-            <Route path="/extension" element={<ProtectedLayout />}>
-              <Route index element={<Extension />} />
-            </Route>
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           </Routes>
         </BrowserRouter>
       </MantineProvider>

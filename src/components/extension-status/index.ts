@@ -1,1 +1,1 @@
-export * from "./extension-paused-alert";
+export * from "./extension-alert";

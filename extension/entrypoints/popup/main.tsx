@@ -6,7 +6,6 @@ function Popup() {
 
   const initialize = async () => {
     const { settings } = await browser.storage.local.get('settings');
-    console.log(settings)
     setIsRuleEnabled(!settings.isPaused);
   }
 
