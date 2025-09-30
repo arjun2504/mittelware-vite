@@ -17,7 +17,6 @@ import RuleEmptyState from "./components/empty-state";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import MomentAgo from "@/components/moment-ago/moment-ago";
 import SkeletonList from "./components/skeleton/list";
-import { useStore, type Store } from "@/store";
 import ExtensionAlert from "@/components/extension-status/extension-alert";
 
 const RulesList = () => {
@@ -27,7 +26,6 @@ const RulesList = () => {
   const [page, setPage] = useState(Number(params.get('page')) || 1);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { settings } = useStore() as Store;
 
   const PAGE_SIZE = 10;
 

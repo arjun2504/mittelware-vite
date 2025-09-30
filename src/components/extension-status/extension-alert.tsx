@@ -1,6 +1,6 @@
 import { useStore, type Store } from "@/store";
-import { Alert, Button, Group, Stack } from "@mantine/core";
-import { FaChrome, FaPlay } from "react-icons/fa6";
+import { Alert, Button, Stack } from "@mantine/core";
+import { FaPlay } from "react-icons/fa6";
 import { Link } from "react-router";
 import { IoExtensionPuzzle } from "react-icons/io5";
 

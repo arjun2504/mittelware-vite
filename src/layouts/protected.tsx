@@ -7,7 +7,6 @@ import { logout } from "@/services/auth/login";
 import Logo from '@/assets/mittelware-logo.png';
 import { FaSignOutAlt } from "react-icons/fa";
 import { FaFilter, FaCaretRight } from "react-icons/fa6";
-import { IoExtensionPuzzle } from "react-icons/io5";
 import Splash from "@/components/splash/spash";
 import useExtensionSync from "@/hooks/use-extension-sync";
 
