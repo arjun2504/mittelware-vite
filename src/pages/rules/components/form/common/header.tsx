@@ -11,7 +11,6 @@ import { FaRegSave } from "react-icons/fa";
 import { notify } from "@/utils/notification";
 import { useMutation } from "@tanstack/react-query";
 import ExtensionAlert from "@/components/extension-status/extension-alert";
-import { useStore, type Store } from "@/store";
 
 interface FormTitleProps {
   title?: string;
@@ -29,7 +28,6 @@ export function FormHeader(props: FormTitleProps) {
   }, [rule.getInitialValues().name]);
   const [opened, { open, close }] = useDisclosure();
   const [isMakeCopyOpen, makeCopyAction] = useDisclosure();
-  const { settings } = useStore() as Store;
 
   const navigate = useNavigate();
 
