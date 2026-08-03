@@ -16,6 +16,24 @@ export const mimeToExtension: Record<string, any> = {
 };
 
 
+export const downloadRulesAsJson = (rules: Rule[], filenamePrefix = 'mittelware-rules') => {
+  const blob = new Blob([JSON.stringify({ rules }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = `${filenamePrefix}-${new Date().toISOString().slice(0, 10)}.json`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+};
+
+// UTF-8 safe base64 decoding, matching the encoding done by the extension's devtools panel.
+export const decodeUnicodeBase64 = (str: string) =>
+  decodeURIComponent(
+    Array.prototype.map
+      .call(atob(str), (c: string) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+      .join('')
+  );
+
 export const getDataUrl = (content: string, mimeType: string, filename: string) => {
   const encodedContent = encodeURIComponent(content);
 

@@ -1,16 +1,15 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
 import supabase from "@/services/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useStore } from "@/store";
 import type { Store } from "@/store";
+import { hasGuestRules } from "@/services/rules/local";
+import { migrateGuestRulesToAccount } from "@/services/rules/rules";
+import { notify } from "@/utils/notification";
 
 export const useUser = () => {
-  const navigate = useNavigate();
-
   const { setSession } = useStore() as Store;
 
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryFn: async () => {
       const { data: sessionData } = await supabase.auth.getSession();
 
@@ -20,6 +19,16 @@ export const useUser = () => {
 
       setSession(sessionData.session);
 
+      if (hasGuestRules()) {
+        try {
+          await migrateGuestRulesToAccount();
+          notify('Your local rules were synced to your account', true);
+        } catch (e) {
+          console.error('Failed to sync local rules to account', e);
+          notify('Could not sync your local rules to your account, will retry automatically', false);
+        }
+      }
+
       return {
         session: sessionData.session,
         user: sessionData.session.user
@@ -28,16 +37,6 @@ export const useUser = () => {
     queryKey: ['user'],
     retry: false,
   });
-
-  useEffect(() => {
-    if (!data?.user && !isLoading) {
-      navigate('/login');
-    }
-    if (error) {
-      console.error('Error fetching user');
-      navigate('/login');
-    }
-  }, [data, error, navigate]);
 
   return { user: data?.user, meta: data?.meta , isLoading };
 };

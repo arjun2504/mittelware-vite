@@ -1,1 +1,14 @@
 @import "tailwindcss";
+@custom-variant dark (&:where([data-mantine-color-scheme="dark"], [data-mantine-color-scheme="dark"] *));
+
+.mantine-datatable-header th {
+  border-bottom: 6px solid var(--mantine-color-default) !important;
+}
+.mantine-datatable-header th:first-of-type {
+  border-top-left-radius: var(--mantine-radius-md);
+  border-bottom-left-radius: var(--mantine-radius-md);
+}
+.mantine-datatable-header th:last-of-type {
+  border-top-right-radius: var(--mantine-radius-md);
+  border-bottom-right-radius: var(--mantine-radius-md);
+}

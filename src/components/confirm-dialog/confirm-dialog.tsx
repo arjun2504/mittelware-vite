@@ -32,7 +32,7 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
       {children ? children : <Text>{message}</Text>}
       <Group justify="flex-end" align="center" mt="md">
         <Button variant="outline" onClick={onClose}>{cancelLabel}</Button>
-        <Button variant="filled" color={variant === 'danger' ? 'red' : 'blue'} onClick={onConfirm}>{confirmLabel}</Button>
+        <Button variant="filled" color={variant === 'danger' ? 'red' : undefined} onClick={onConfirm}>{confirmLabel}</Button>
       </Group>
     </Modal>
   )

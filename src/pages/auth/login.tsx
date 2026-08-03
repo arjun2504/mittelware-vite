@@ -177,16 +177,29 @@ const Login = () => {
                 : 'Did not receive? Click to resend'}
             </Anchor>
           ) : null}
-          <Button 
-            loading={sendOtp.isPending || login.isPending} 
-            type="submit" 
-            radius="xl" 
+          <Button
+            loading={sendOtp.isPending || login.isPending}
+            type="submit"
+            radius="xl"
             disabled={isButtonDisabled()}
           >
             {canAskCode ? 'Verify & Sign In' : 'Continue'}
           </Button>
         </Group>
       </form>
+
+      <Anchor
+        component="button"
+        type="button"
+        c="dimmed"
+        size="sm"
+        ta="center"
+        mt="lg"
+        display="block"
+        onClick={() => navigate('/rules')}
+      >
+        Skip Login
+      </Anchor>
     </>);
 }
 

@@ -69,7 +69,6 @@ const DEFAULT_META = {
   config: {},
   advanced_filters: DEFAULT_ADVANCED_FILTERS,
   is_enabled: true,
-  id: 'create',
   type: 'block'
 };
 

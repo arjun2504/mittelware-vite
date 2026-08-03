@@ -1,7 +1,5 @@
-import { ActionIcon, Alert, Autocomplete, Button, Flex, Grid, InputDescription, InputLabel, SegmentedControl, Select, Stack, TextInput, Tooltip } from "@mantine/core";
-import { AdvancedFilters } from "./common/advanced-filters";
+import { ActionIcon, Alert, Autocomplete, Button, Card, Flex, Grid, InputDescription, InputLabel, SegmentedControl, Select, Stack, TextInput, Tooltip } from "@mantine/core";
 import { URLInput } from "./common/url";
-import { FormHeader } from "./common/header";
 import { MODIFY_HEADER_ACTIONS, MODIFY_HEADER_KEYS, MODIFY_HEADER_TABS } from "@/constants/rules/form";
 import { FcPlus } from "react-icons/fc";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
@@ -103,70 +101,74 @@ export function HeaderForm() {
 
   return (
     <Stack gap='md'>
-      <FormHeader title='Modify Headers' />
-      <URLInput />
-      <Stack gap={4}>
-        <InputLabel>Modify Headers</InputLabel>
-        <InputDescription>Modifying both request headers and response headers for the matching URL will be applied</InputDescription>
-        <Stack gap='md'>
-          <SegmentedControl
-            fullWidth={true}
-            data={MODIFY_HEADER_TABS}
-            onChange={(value) => setCurrentHeaderTab(value as HeaderTabType)}
-            value={currentHeaderTab}
-          />
-          <Grid>
-            {headers[currentHeaderTab].map((header, index) => (
-              <Fragment key={header.id}>
-                <Grid.Col span={2}>
-                  <Select
-                    defaultValue={header.action}
-                    data={MODIFY_HEADER_ACTIONS}
-                    onChange={(value) => onChange(value, 'action', index)}
-                  />
-                </Grid.Col>
-                <Grid.Col span={5}>
-                  <Autocomplete
-                    placeholder='Header Key'
-                    defaultValue={header.key}
-                    onChange={(value) => onChange(value, 'key', index)}
-                    data={MODIFY_HEADER_KEYS}
-                  />
-                </Grid.Col>
-                <Grid.Col span={5}>
-                  <Flex gap='md' align='center'>
-                    <TextInput
-                      placeholder='Header Value'
-                      flex={1}
-                      defaultValue={header.value}
-                      onChange={(event) => onChange(event.currentTarget.value, 'value', index)}
-                      disabled={header.action === 'remove'}
-                      key={header.action}
+      <Card>
+        <URLInput />
+      </Card>
+      <Card>
+        <Stack gap={4}>
+          <InputLabel>Modify Headers</InputLabel>
+          <InputDescription>Modifying both request headers and response headers for the matching URL will be applied</InputDescription>
+          <Stack gap='md'>
+            <SegmentedControl
+              fullWidth={true}
+              data={MODIFY_HEADER_TABS}
+              onChange={(value) => setCurrentHeaderTab(value as HeaderTabType)}
+              value={currentHeaderTab}
+            />
+            <Grid>
+              {headers[currentHeaderTab].map((header, index) => (
+                <Fragment key={header.id}>
+                  <Grid.Col span={2}>
+                    <Select
+                      defaultValue={header.action}
+                      data={MODIFY_HEADER_ACTIONS}
+                      onChange={(value) => onChange(value, 'action', index)}
                     />
-                    <Tooltip label="Remove">
-                      <ActionIcon variant='light' color='red' size='input-sm' onClick={() => onRemoveHeader(index)}>
-                        <MdOutlineClose />
-                      </ActionIcon>
-                    </Tooltip>
-                  </Flex>
-                </Grid.Col>
-              </Fragment>
-            ))}
-          </Grid>
-          <Button
-            leftSection={<FcPlus />}
-            variant='transparent'
-            fullWidth={false}
-            justify='flex-start'
-            className='!w-fit'
-            onClick={onAddNewHeader}
-          >Add new</Button>
+                  </Grid.Col>
+                  <Grid.Col span={5}>
+                    <Autocomplete
+                      placeholder='Header Key'
+                      defaultValue={header.key}
+                      onChange={(value) => onChange(value, 'key', index)}
+                      data={MODIFY_HEADER_KEYS}
+                      styles={{ input: { fontFamily: 'var(--mantine-font-family-monospace)' } }}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={5}>
+                    <Flex gap='md' align='center'>
+                      <TextInput
+                        placeholder='Header Value'
+                        flex={1}
+                        defaultValue={header.value}
+                        onChange={(event) => onChange(event.currentTarget.value, 'value', index)}
+                        disabled={header.action === 'remove'}
+                        key={header.action}
+                        styles={{ input: { fontFamily: 'var(--mantine-font-family-monospace)' } }}
+                      />
+                      <Tooltip label="Remove">
+                        <ActionIcon variant='light' color='red' size='input-sm' onClick={() => onRemoveHeader(index)}>
+                          <MdOutlineClose />
+                        </ActionIcon>
+                      </Tooltip>
+                    </Flex>
+                  </Grid.Col>
+                </Fragment>
+              ))}
+            </Grid>
+            <Button
+              leftSection={<FcPlus />}
+              variant='transparent'
+              fullWidth={false}
+              justify='flex-start'
+              className='!w-fit'
+              onClick={onAddNewHeader}
+            >Add new</Button>
+          </Stack>
+          <Alert title="Note" mt='lg' icon={<FaInfoCircle />} variant='light'>
+            The modified headers will not be visible in the browser's developer console due to limitations. However, the changes will be reflected in the actual response received by the client.
+          </Alert>
         </Stack>
-        <Alert title="Note" mt='lg' icon={<FaInfoCircle />}>
-          The modified headers will not be visible in the browser's developer console due to limitations. However, the changes will be reflected in the actual response received by the client.
-        </Alert>
-      </Stack>
-      <AdvancedFilters />
+      </Card>
     </Stack>
   )
 }

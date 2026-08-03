@@ -22,16 +22,15 @@ export function URLInput(props: URLInputProps) {
 
   return (
     <TextInput
-      size="md"
       label={label}
       description={description}
       placeholder={placeholder}
       withAsterisk
+      styles={{ input: { fontFamily: 'var(--mantine-font-family-monospace)' } }}
       {...!fullMatch ? ({
         leftSection: <Badge>contains</Badge>,
         leftSectionWidth: '100'
       }) : ({})}
-      mb='lg'
       key={rule.key(name)}
       {...rule.getInputProps(name)}
     />

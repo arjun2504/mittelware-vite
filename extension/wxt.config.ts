@@ -10,6 +10,9 @@ export default defineConfig({
   vite: () => ({
     plugins: [tailwindcss()],
   }),
+  autoIcons: {
+    baseIconPath: 'assets/icon.svg',
+  },
   manifest: {
     "permissions": [
       "declarativeNetRequest",

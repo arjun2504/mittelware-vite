@@ -42,13 +42,15 @@ export default defineBackground({
       }
     });
 
-    browser.runtime.onInstalled.addListener(() => {
+    browser.runtime.onInstalled.addListener((details) => {
+      if (details.reason !== 'install') return;
+
       browser.storage.local.set({
         settings: {
           isPaused: false,
         }
       });
-      // browser.tabs.create({ url: 'https://intercept.mittelware.com' });
+      browser.tabs.create({ url: import.meta.env.VITE_HOST_URL });
     });
   }
 });

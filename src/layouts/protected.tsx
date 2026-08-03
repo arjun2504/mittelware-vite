@@ -1,43 +1,93 @@
-import { AppShell, Image, Group, Text, Container, Stack, NavLink as MantineNavLink, Tooltip, Avatar, Menu } from "@mantine/core";
+import { AppShell, Image, Group, Text, Container, Stack, NavLink as MantineNavLink, Tooltip, Avatar, Menu, Button, ActionIcon, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
 import { Link, NavLink, Outlet, useNavigate, useLocation } from "react-router";
 import { useUser } from "@/hooks/use-user";
 import { ConfirmDialog } from "@/components/confirm-dialog/confirm-dialog";
 import { logout } from "@/services/auth/login";
 import Logo from '@/assets/mittelware-logo.png';
-import { FaSignOutAlt } from "react-icons/fa";
-import { FaFilter, FaCaretRight } from "react-icons/fa6";
+import { FaSignOutAlt, FaFilter } from "react-icons/fa";
+import { FaCaretRight, FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import Splash from "@/components/splash/spash";
 import useExtensionSync from "@/hooks/use-extension-sync";
+import ThemeToggle from "@/components/theme-toggle/theme-toggle";
 
+const SIDEBAR_COLLAPSED_KEY = 'mittelware:sidebar-collapsed';
+const SIDEBAR_EXPANDED_WIDTH = 220;
+const SIDEBAR_COLLAPSED_WIDTH = 76;
 
 export const ProtectedLayout = () => {
   const [opened] = useDisclosure();
   const [logoutDialogOpen, { open: openLogoutDialog, close: closeLogoutDialog }] = useDisclosure();
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true');
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isLoading } = useUser();
-  
+  const { colorScheme } = useMantineColorScheme();
+  const isDark = colorScheme === 'dark';
+
   useExtensionSync();
 
-  return (!isLoading && user) ? (
+  const toggleCollapsed = () => {
+    setCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(next));
+      return next;
+    });
+  };
+
+  return !isLoading ? (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 56 }}
       navbar={{
-        width: 50,
+        width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH,
         breakpoint: 'sm',
         collapsed: { mobile: !opened },
       }}
     >
-      <AppShell.Header className="top-0 !bg-sky-50/50 bg-opacity-50 drop-shadow-sm drop-shadow-gray-100 relative backdrop-blur-xl" pt="md" px="md" pb="lg">
-        <Group justify="space-between" align="center">
+      <AppShell.Header
+        className="top-0 relative"
+        px="md"
+        style={{
+          borderBottom: '1px solid var(--mantine-color-default-border)',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <Group justify="space-between" align="center" style={{ width: '100%' }}>
           <Link to="/rules">
-            <Group gap='xs' align="top">
-              <Image src={Logo} h={30} w={140} fit='contain' />
-              <FaCaretRight className="self-center" />
-              <Text c='gray' size="lg" fw={400}>Intercept</Text>
+            <Group gap='xs' align="center">
+              <Image src={Logo} h={26} w={120} fit='contain' style={isDark ? { filter: 'brightness(0) invert(1)' } : undefined} />
+              <FaCaretRight color="var(--mantine-color-dimmed)" className="self-center" />
+              <Text c='dimmed' size="md" fw={400}>Intercept</Text>
             </Group>
           </Link>
+          <Group gap='xs'>
+            <ThemeToggle />
+            {user ? (
+              <Menu withArrow shadow="md">
+                <Menu.Target>
+                  <Avatar className="cursor-pointer" size='sm' src={user.user_metadata.avatar_url} alt={user.user_metadata.full_name} />
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item className="!bg-transparent !hover:bg-transparent">
+                    <Text>{user.user_metadata.full_name}</Text>
+                    <Text size="xs" c="dimmed">{user.email}</Text>
+                  </Menu.Item>
+                  <Menu.Divider />
+                  <Menu.Item onClick={openLogoutDialog} leftSection={<FaSignOutAlt />}>
+                    Logout
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            ) : (
+              <Tooltip label="Login to sync your rules" withArrow>
+                <Button component={Link} to="/login" variant="light" size="xs">
+                  Login
+                </Button>
+              </Tooltip>
+            )}
+          </Group>
         </Group>
       </AppShell.Header>
       <ConfirmDialog
@@ -53,45 +103,54 @@ export const ProtectedLayout = () => {
           navigate('/logout');
         }}
       />
-      <AppShell.Navbar className="bg-white">
-        <Stack justify="space-between" style={{ height: '100%' }}>
-          <Stack gap={0}>
-            <Tooltip label="Rules" position="right" withArrow>
-              <MantineNavLink
-                component={NavLink}
-                to="/rules"
-                label="Rules"
-                leftSection={<FaFilter />}
-                variant="filled"
-                active={location.pathname.startsWith('/rules')}
-              />
-            </Tooltip>
+      <AppShell.Navbar style={{ borderRight: '1px solid var(--mantine-color-default-border)' }}>
+        <Stack justify="space-between" style={{ height: '100%' }} gap={0}>
+          <Stack gap={0} mt='xs'>
+            {(() => {
+              const isActive = location.pathname.startsWith('/rules');
+              const link = (
+                <MantineNavLink
+                  component={NavLink}
+                  to="/rules"
+                  label={!collapsed ? 'Rules' : undefined}
+                  leftSection={<FaFilter size={16} />}
+                  variant="light"
+                  color="violet"
+                  active={isActive}
+                  style={{
+                    borderLeft: '3px solid',
+                    borderLeftColor: isActive ? 'var(--mantine-color-violet-4)' : 'transparent',
+                  }}
+                />
+              );
+              return collapsed ? (
+                <Tooltip label="Rules" position="right" withArrow>
+                  {link}
+                </Tooltip>
+              ) : link;
+            })()}
           </Stack>
-          <Stack gap={0} justify="flex-end">
-            <Menu withArrow shadow="md">
-              <Menu.Target>
-                <Avatar className="cursor-pointer" src={user.user_metadata.avatar_url} m={6} alt={user.user_metadata.full_name} />
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item className="!bg-transparent !hover:bg-transparent">
-                  <Text>{user.user_metadata.full_name}</Text>
-                  <Text size="xs" c="dimmed">{user.email}</Text>
-                </Menu.Item>
-                <Menu.Divider />
-                <Menu.Item onClick={openLogoutDialog} leftSection={<FaSignOutAlt />}>
-                  Logout
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </Stack>
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            size="lg"
+            className="self-center"
+            mb='xs'
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            onClick={toggleCollapsed}
+          >
+            {collapsed ? <FaAnglesRight /> : <FaAnglesLeft />}
+          </ActionIcon>
         </Stack>
       </AppShell.Navbar>
-      <AppShell.Main className='bg-gray-50 bg-[linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,.3)),url(/bg.png)]'>
-        <Container size='lg' p={0} pb='xl' className='shadow-lg bg-white' mih={'calc(100vh - 60px)'}>
+      <AppShell.Main
+        style={{
+          backgroundColor: isDark ? 'var(--mantine-color-dark-8)' : 'var(--mantine-color-gray-0)',
+          minHeight: 'calc(100vh - 56px)',
+        }}
+      >
+        <Container size='lg' p={0} pb='xl'>
           <Outlet />
-          {/* <Text size='sm'>
-            <Center>&copy; {new Date().getFullYear()} Mittelware</Center>
-          </Text> */}
         </Container>
       </AppShell.Main>
     </AppShell>

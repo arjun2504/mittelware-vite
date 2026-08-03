@@ -15,11 +15,9 @@ const ExtensionAlert = () => {
           <p>To execute the rules you've added, you'll need to install <span className="font-bold">Intercept by Mittelware</span> from the store. This extension enables the rules to actively intercept your network requests.</p>
           <Link target="_blank" to="https://chromewebstore.google.com/detail/phflkedcmcidnndahgchpfmbnpjplicf/">
             <Button
-              variant="light"
-              leftSection={<img src="/chrome.png" height={30} width={30} />}
-              className="!bg-red-400 hover:w-2.5"
-              size="sm"
-              color="white"
+              variant="filled"
+              color="red"
+              leftSection={<img src="/chrome.png" height={20} width={20} />}
             >
               Add to Chrome
             </Button>

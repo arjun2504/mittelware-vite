@@ -18,7 +18,7 @@ const sendToBackground = (type: string, payload: any) => {
 }
 
 export default defineContentScript({
-  matches: ['http://localhost:5173/*', 'https://intercept.mittelware.com/*'],
+  matches: ['http://localhost/*', 'https://intercept.mittelware.com/*'],
   main() {
     window.addEventListener('message', async (event) => {
       if (event.data?.source !== 'mittelware-intercept-rules') return;

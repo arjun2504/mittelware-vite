@@ -1,5 +1,5 @@
 import { ActionIcon, Group, Switch, TextInput, Menu } from "@mantine/core";
-import { FaPencil, FaRegCopy, FaRegTrashCan } from "react-icons/fa6";
+import { FaPencil, FaRegCopy, FaRegTrashCan, FaDownload } from "react-icons/fa6";
 import { FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import type { Rule } from "@/types/rules";
@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { cloneRule } from "@/services/rules/rules";
 import { notify } from "@/utils/notification";
+import { downloadRulesAsJson } from "@/utils/rules";
 
 interface TableActionsProps {
   record: Rule;
@@ -33,7 +34,7 @@ export function TableActions(props: TableActionsProps) {
         const data = await cloneRule(record, copyName);
         notify('Successfully created a copy of the rule', true);
         isMakeCopyAction.close();
-        navigate(`/rules/${data.type}/${data.id}`);
+        navigate(`/rules/${data.id}`);
       } catch (error) {
         console.error('Failed to clone rule:', error);
         notify('Failed to make a copy of the rule', false);
@@ -44,6 +45,10 @@ export function TableActions(props: TableActionsProps) {
   const onDeleteRecord = () => {
     isDeleteConfirmAction.close();
     onDelete(record.id as number);
+  }
+
+  const onExport = () => {
+    downloadRulesAsJson([record], `mittelware-rule-${record.name}`);
   }
 
   return (
@@ -68,11 +73,14 @@ export function TableActions(props: TableActionsProps) {
           </ActionIcon>
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item leftSection={<FaPencil />} onClick={() => navigate(`/rules/${record.type}/${record.id}`)}>
+          <Menu.Item leftSection={<FaPencil />} onClick={() => navigate(`/rules/${record.id}`)}>
             Edit
           </Menu.Item>
           <Menu.Item leftSection={<FaRegCopy />} onClick={e => { e.stopPropagation(); onOpenMakeCopy(); }}>
             Make a copy
+          </Menu.Item>
+          <Menu.Item leftSection={<FaDownload />} onClick={e => { e.stopPropagation(); onExport(); }}>
+            Export
           </Menu.Item>
           <Menu.Item leftSection={<FaRegTrashCan />} color="red" onClick={e => { e.stopPropagation(); isDeleteConfirmAction.open(); }}>
             Delete

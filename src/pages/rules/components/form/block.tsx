@@ -1,15 +1,11 @@
-import { Stack } from "@mantine/core";
-import { AdvancedFilters } from "./common/advanced-filters";
+import { Card } from "@mantine/core";
 import { URLInput } from "./common/url";
-import { FormHeader } from "./common/header";
 
 export function BlockForm() {
 
   return (
-    <Stack gap='md'>
-      <FormHeader title='Block URL' />
+    <Card>
       <URLInput />
-      <AdvancedFilters />
-    </Stack>
+    </Card>
   )
 }

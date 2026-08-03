@@ -1,23 +1,29 @@
-import { Button, Flex, Group, Stack, Switch, Textarea, TextInput, Title } from "@mantine/core";
+import { Button, Card, Flex, Group, Select, Stack, Switch, Textarea, TextInput, Title } from "@mantine/core";
 import { useState, useEffect } from "react";
 import { useRuleContext } from "../context/rule";
 import { useDisclosure } from "@mantine/hooks";
 import { ConfirmDialog } from "@/components/confirm-dialog/confirm-dialog";
 import { useNavigate } from "react-router";
 import { cloneRule, deleteRule } from "@/services/rules/rules";
-import { FaRegCopy } from "react-icons/fa6";
+import { FaRegCopy, FaDownload } from "react-icons/fa6";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FaRegSave } from "react-icons/fa";
 import { notify } from "@/utils/notification";
 import { useMutation } from "@tanstack/react-query";
-import ExtensionAlert from "@/components/extension-status/extension-alert";
+import { RULE_TYPES } from "@/constants/rules/rules";
+import type { Rule } from "@/types/rules";
+import { downloadRulesAsJson } from "@/utils/rules";
+
+const INTERCEPT_TYPE_OPTIONS = RULE_TYPES.map((rt) => ({ value: rt.type, label: rt.label }));
 
 interface FormTitleProps {
   title?: string;
+  selectedType: Rule['type'];
+  onTypeChange: (type: Rule['type']) => void;
 }
 
 export function FormHeader(props: FormTitleProps) {
-  const { title } = props;
+  const { title, selectedType, onTypeChange } = props;
   const rule = useRuleContext();
   const [isDescriptionShown, setIsDescriptionShown] = useState(!!rule.getInitialValues().description);
   const [copyName, setCopyName] = useState(`Copy of ${rule.getInitialValues().name}`);
@@ -50,7 +56,7 @@ export function FormHeader(props: FormTitleProps) {
     onSuccess: (data) => {
       notify('Successfully created a copy of the rule', true);
       makeCopyAction.close();
-      navigate(`/rules/${data.type}/${data.id}`);
+      navigate(`/rules/${data.id}`);
     },
     onError: (error) => {
       console.error('Failed to clone rule:', error);
@@ -70,23 +76,29 @@ export function FormHeader(props: FormTitleProps) {
 
   const onCopy = () => {
     if (copyName.trim() !== '') {
-      cloneRuleMutation.mutate({ 
-        rule: rule.getInitialValues(), 
-        copyName 
+      cloneRuleMutation.mutate({
+        rule: rule.getInitialValues(),
+        copyName
       });
     }
   }
 
+  const onExport = () => {
+    const values = rule.getValues();
+    downloadRulesAsJson([values], `mittelware-rule-${values.name}`);
+  }
+
   return (
     <>
-      <Flex justify='space-between'>
-        <Title>{title}</Title>
+      <Flex justify='space-between' align='center'>
+        <Title order={2}>{title}</Title>
         <Group>
           <Switch
             onLabel='ON'
             offLabel='OFF'
             defaultChecked={rule.getInitialValues().is_enabled}
-            size='xl'
+            size='lg'
+            color='violet'
             className='!cursor-pointer'
             {...rule.getInputProps('is_enabled')}
             onToggle={(value) => {
@@ -99,16 +111,24 @@ export function FormHeader(props: FormTitleProps) {
             return ruleId && !isNaN(ruleId);
           })() && (
             <Group>
-              <Button 
-                type='button' 
-                variant='outline' 
-                onClick={makeCopyAction.open} 
+              <Button
+                type='button'
+                variant='outline'
+                onClick={makeCopyAction.open}
                 leftSection={<FaRegCopy />}
                 loading={cloneRuleMutation.isPending}
               >
                 Make a copy
               </Button>
-              <Button 
+              <Button
+                type='button'
+                variant='outline'
+                onClick={onExport}
+                leftSection={<FaDownload />}
+              >
+                Export
+              </Button>
+              <Button
                 type='button' 
                 variant='light' 
                 color='red' 
@@ -123,26 +143,36 @@ export function FormHeader(props: FormTitleProps) {
           <Button type='submit' disabled={!rule.isDirty()} loading={rule.submitting} leftSection={<FaRegSave />}>Save Rule</Button>
         </Group>
       </Flex>
-      <ExtensionAlert />
-      <Stack gap='md' w='50%'>
-        <TextInput
-          label='Name'
-          placeholder='Rule Name'
-          key={rule.key('name')}
-          withAsterisk
-          {...rule.getInputProps('name')}
-        />
-        {isDescriptionShown ? (
-          <Textarea
-            label='Description'
-            placeholder='Describe what does this rule do'
-            key={rule.key('description')}
-            {...rule.getInputProps('description')}
+      <Card>
+        <Stack gap='md' maw={480}>
+          <Select
+            label='Intercept Type'
+            description='What should happen to matching requests'
+            data={INTERCEPT_TYPE_OPTIONS}
+            value={selectedType}
+            onChange={(value) => value && onTypeChange(value as Rule['type'])}
+            allowDeselect={false}
+            withAsterisk
           />
-        ) : (
-          <Button variant='transparent' onClick={() => setIsDescriptionShown(true)} className='self-start' p={0}>Add a description</Button>
-        )}
-      </Stack>
+          <TextInput
+            label='Name'
+            placeholder='Rule Name'
+            key={rule.key('name')}
+            withAsterisk
+            {...rule.getInputProps('name')}
+          />
+          {isDescriptionShown ? (
+            <Textarea
+              label='Description'
+              placeholder='Describe what does this rule do'
+              key={rule.key('description')}
+              {...rule.getInputProps('description')}
+            />
+          ) : (
+            <Button variant='transparent' onClick={() => setIsDescriptionShown(true)} className='self-start' p={0}>Add a description</Button>
+          )}
+        </Stack>
+      </Card>
       <ConfirmDialog
         isOpen={opened}
         onClose={close}
