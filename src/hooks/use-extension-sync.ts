@@ -11,11 +11,13 @@ const useExtensionSync = () => {
   const onExtensionPong = (event: MessageEvent) => {
     if (event.data.source !== 'mittelware-intercept-rules-extension') return;
 
-    const { setSettings, setIsExtensionConnected } = useStore.getState() as Store;
+    const { setSettings, setIsExtensionConnected, setExtensionVersion, setRecordingDraft } = useStore.getState() as Store;
 
     if (event.data.type === 'mittelware:intercept:pong') {
       setSettings(event.data.storage.settings);
       setIsExtensionConnected(true);
+      setExtensionVersion(event.data.version ?? null);
+      setRecordingDraft(event.data.storage.recordingDraft ?? null);
 
       if (!isInitialized.current) {
         syncRulesWithExtension();

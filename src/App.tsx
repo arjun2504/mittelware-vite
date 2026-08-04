@@ -11,6 +11,9 @@ import RulesList from '@/pages/rules/list'
 import { ProtectedLayout } from './layouts/protected'
 import RuleForm from './pages/rules/form'
 import PrivacyPolicy from './pages/privacy-policy'
+import RecordingsList from '@/pages/recordings/list'
+import RecordingReview from '@/pages/recordings/review'
+import RecordingDetail from '@/pages/recordings/detail'
 
 const theme = createTheme({
   primaryColor: 'violet',
@@ -52,6 +55,11 @@ function App() {
               <Route index element={<RulesList />} />
               <Route path="create" element={<RuleForm />} />
               <Route path=":id" element={<RuleForm />} />
+            </Route>
+            <Route path="/recordings" element={<ProtectedLayout />}>
+              <Route index element={<RecordingsList />} />
+              <Route path="review" element={<RecordingReview />} />
+              <Route path=":id" element={<RecordingDetail />} />
             </Route>
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           </Routes>

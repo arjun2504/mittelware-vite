@@ -7,10 +7,12 @@ import { ConfirmDialog } from "@/components/confirm-dialog/confirm-dialog";
 import { logout } from "@/services/auth/login";
 import Logo from '@/assets/mittelware-logo.png';
 import { FaSignOutAlt, FaFilter } from "react-icons/fa";
-import { FaCaretRight, FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+import { FaCaretRight, FaAnglesLeft, FaAnglesRight, FaVideo } from "react-icons/fa6";
 import Splash from "@/components/splash/spash";
 import useExtensionSync from "@/hooks/use-extension-sync";
 import ThemeToggle from "@/components/theme-toggle/theme-toggle";
+import { RECORDING_FEATURE_EXTENSION_VERSION } from "@/constants/extension";
+import { useStore, type Store } from "@/store";
 
 const SIDEBAR_COLLAPSED_KEY = 'mittelware:sidebar-collapsed';
 const SIDEBAR_EXPANDED_WIDTH = 220;
@@ -25,6 +27,8 @@ export const ProtectedLayout = () => {
   const { user, isLoading } = useUser();
   const { colorScheme } = useMantineColorScheme();
   const isDark = colorScheme === 'dark';
+  const { extensionVersion } = useStore() as Store;
+  const isRecordingFeatureEnabled = extensionVersion === RECORDING_FEATURE_EXTENSION_VERSION;
 
   useExtensionSync();
 
@@ -125,6 +129,29 @@ export const ProtectedLayout = () => {
               );
               return collapsed ? (
                 <Tooltip label="Rules" position="right" withArrow>
+                  {link}
+                </Tooltip>
+              ) : link;
+            })()}
+            {isRecordingFeatureEnabled && (() => {
+              const isActive = location.pathname.startsWith('/recordings');
+              const link = (
+                <MantineNavLink
+                  component={NavLink}
+                  to="/recordings"
+                  label={!collapsed ? 'Recordings' : undefined}
+                  leftSection={<FaVideo size={16} />}
+                  variant="light"
+                  color="violet"
+                  active={isActive}
+                  style={{
+                    borderLeft: '3px solid',
+                    borderLeftColor: isActive ? 'var(--mantine-color-violet-4)' : 'transparent',
+                  }}
+                />
+              );
+              return collapsed ? (
+                <Tooltip label="Recordings" position="right" withArrow>
                   {link}
                 </Tooltip>
               ) : link;

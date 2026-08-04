@@ -18,7 +18,11 @@ export default defineConfig({
       "declarativeNetRequest",
       "declarativeNetRequestWithHostAccess",
       "unlimitedStorage",
-      "storage"
+      "storage",
+      "sidePanel",
+      "tabs",
+      "webNavigation",
+      "scripting"
     ],
     "host_permissions": ["<all_urls>"]
   }
