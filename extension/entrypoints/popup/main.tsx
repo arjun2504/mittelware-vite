@@ -1,4 +1,7 @@
 import { createRoot } from "react-dom/client";
+import { MantineProvider, Box, Badge, Button, Group, Image, Stack, Switch, Text } from "@mantine/core";
+import "@mantine/core/styles.css";
+import { theme } from "../../theme";
 import "./style.css";
 
 function Popup() {
@@ -13,8 +16,8 @@ function Popup() {
     initialize();
   }, []);
 
-  const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rulesEnabled = e.target.checked;
+  const onChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const rulesEnabled = event.currentTarget.checked;
     setIsRuleEnabled(rulesEnabled);
     const { settings } = await browser.storage.local.get('settings');
     const updatedSettings = {
@@ -28,37 +31,53 @@ function Popup() {
   }
 
   return (
-    <div className="w-80 m-1 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-lg overflow-hidden">
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
-        <img src="/mittelware-logo.png" alt="Mittelware Logo" className="h-5 w-auto" />
-        <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">Intercept</span>
-        <span className="text-xs text-neutral-400 dark:text-neutral-500">by Mittelware</span>
-      </div>
+    <Box
+      w={320}
+      m={4}
+      bg="var(--mantine-color-body)"
+      style={{
+        borderRadius: 'var(--mantine-radius-md)',
+        border: '1px solid var(--mantine-color-default-border)',
+        boxShadow: 'var(--mantine-shadow-lg)',
+        overflow: 'hidden',
+      }}
+    >
+      <Group px="md" py="sm" gap="xs" style={{ borderBottom: '1px solid var(--mantine-color-default-border)' }}>
+        <Image src="/mittelware-logo.png" alt="Mittelware Logo" h={20} w="auto" fit="contain" />
+        <Text size="sm" fw={600}>Intercept</Text>
+        <Text size="xs" c="dimmed">by Mittelware</Text>
+      </Group>
 
-      <div className="flex flex-col gap-4 px-4 py-4">
-        <div className="flex items-center justify-between">
-          <span className={`inline-flex items-center gap-1.5 text-sm font-medium ${isRuleEnabled ? 'text-emerald-600 dark:text-emerald-400' : 'text-neutral-400 dark:text-neutral-500'}`}>
-            <span className={`h-1.5 w-1.5 rounded-full ${isRuleEnabled ? 'bg-emerald-500' : 'bg-neutral-400'}`} />
+      <Stack px="md" py="md" gap="md">
+        <Group justify="space-between">
+          <Badge
+            variant="light"
+            color={isRuleEnabled ? 'teal' : 'gray'}
+            leftSection={
+              <Box
+                w={6}
+                h={6}
+                style={{ borderRadius: '50%', backgroundColor: isRuleEnabled ? 'var(--mantine-color-teal-6)' : 'var(--mantine-color-gray-5)' }}
+              />
+            }
+          >
             {isRuleEnabled ? 'Running' : 'Paused'}
-          </span>
-          <div className="flex">
-            <input checked={isRuleEnabled} type="checkbox" id="switch" name="some-switch" onChange={onChange} />
-            <label htmlFor="switch"></label>
-          </div>
-        </div>
+          </Badge>
+          <Switch checked={isRuleEnabled} onChange={onChange} color="violet" />
+        </Group>
 
-        <a
-          href={import.meta.env.VITE_HOST_URL}
-          target="_blank"
-          className="flex items-center justify-center gap-1.5 rounded-md bg-violet-600 hover:bg-violet-700 py-2 px-4 text-sm font-medium text-white transition-colors"
-        >
+        <Button component="a" href={import.meta.env.VITE_HOST_URL} target="_blank">
           Configure Rules
-        </a>
-      </div>
-    </div>
+        </Button>
+      </Stack>
+    </Box>
   );
 }
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
-root.render(<Popup />);
+root.render(
+  <MantineProvider forceColorScheme="dark" theme={theme}>
+    <Popup />
+  </MantineProvider>
+);

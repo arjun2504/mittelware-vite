@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { Breadcrumbs, Text, Stack, Title, Card } from "@mantine/core";
+import { Breadcrumbs, Text, Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { getRecording } from "@/services/recordings/recordings";
 import ExtensionAlert from "@/components/extension-status/extension-alert";
@@ -25,9 +25,7 @@ const RecordingDetail = () => {
       <ExtensionAlert />
       <Title order={2}>{recording?.name}</Title>
       {recording ? (
-        <Card>
-          <RecordingSteps steps={recording.steps} />
-        </Card>
+        <RecordingSteps steps={recording.steps} />
       ) : null}
     </Stack>
   );

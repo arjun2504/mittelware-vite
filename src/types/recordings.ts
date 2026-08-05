@@ -2,6 +2,8 @@ export interface RecordingStep {
   type: 'navigate' | 'click' | 'type';
   description: string;
   screenshot?: string; // base64 data URL
+  point?: { x: number; y: number }; // viewport-relative (0-1) click/type coordinates
+  zoom?: number; // user-adjusted zoom level focused on `point`, set during review
 }
 
 export interface RecordingDraft {

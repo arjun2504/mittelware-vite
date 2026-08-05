@@ -8,6 +8,7 @@ import { saveRecording } from "@/services/recordings/recordings";
 import { notify } from "@/utils/notification";
 import ExtensionAlert from "@/components/extension-status/extension-alert";
 import RecordingSteps from "./components/recording-steps";
+import type { RecordingStep } from "@/types/recordings";
 
 const clearRecordingDraft = () => {
   window.postMessage({
@@ -19,17 +20,34 @@ const clearRecordingDraft = () => {
 const RecordingReview = () => {
   const { recordingDraft } = useStore() as Store;
   const [name, setName] = useState('');
+  const [steps, setSteps] = useState<RecordingStep[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     pingExtension();
   }, []);
 
+  useEffect(() => {
+    setSteps(recordingDraft?.steps ?? []);
+  }, [recordingDraft]);
+
+  const onStepZoomChange = (index: number, zoom: number) => {
+    setSteps((prev) => prev.map((step, i) => (i === index ? { ...step, zoom } : step)));
+  };
+
+  const onStepDescriptionChange = (index: number, description: string) => {
+    setSteps((prev) => prev.map((step, i) => (i === index ? { ...step, description } : step)));
+  };
+
+  const onStepDelete = (index: number) => {
+    setSteps((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const saveMutation = useMutation({
     mutationFn: () => saveRecording({
       name: name.trim(),
       url: recordingDraft!.url,
-      steps: recordingDraft!.steps,
+      steps,
     }),
     onSuccess: (data) => {
       clearRecordingDraft();
@@ -74,9 +92,13 @@ const RecordingReview = () => {
               </Group>
             </Stack>
           </Card>
-          <Card>
-            <RecordingSteps steps={recordingDraft.steps} />
-          </Card>
+          <RecordingSteps
+            steps={steps}
+            editable
+            onStepZoomChange={onStepZoomChange}
+            onStepDescriptionChange={onStepDescriptionChange}
+            onStepDelete={onStepDelete}
+          />
         </>
       )}
     </Stack>
